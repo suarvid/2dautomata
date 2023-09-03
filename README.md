@@ -4,7 +4,7 @@
 - Add Cunit and write some tests
 - Add more cell types
 - Add menu for selecting cell types
-- Add keyboard shortcut for selecting cell types
+- Take density into account when checking if possible to move cell
 
 ## How to build
 Run the program with the command `make run`.
