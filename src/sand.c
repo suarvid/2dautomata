@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// TODO: Use the move-* functions in world.h (implement them first)
 void update_sand_diagonal(world_t cells, uint16_t x, uint16_t y)
 {
     if (empty_left_down(cells, x, y) && empty_right_down(cells, x, y))
