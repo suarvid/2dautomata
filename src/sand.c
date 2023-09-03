@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 // TODO: Use the move-* functions in world.h (implement them first)
-void update_sand_diagonal(world_t cells, uint16_t x, uint16_t y)
+bool update_sand_diagonal(world_t cells, uint16_t x, uint16_t y)
 {
     if (empty_left_down(cells, x, y) && empty_right_down(cells, x, y))
     {
@@ -14,23 +14,27 @@ void update_sand_diagonal(world_t cells, uint16_t x, uint16_t y)
         if (rand_nr == 0)
         {
             move_cell(cells, x, y, x - 1, y + 1);
+            return true;
         }
         else
         {
             move_cell(cells, x, y, x + 1, y + 1);
+            return true;
         }
     }
     else if (empty_left_down(cells, x, y))
     {
         move_cell(cells, x, y, x - 1, y + 1);
+        return true;
     }
     else if (empty_right_down(cells, x, y))
     {
         move_cell(cells, x, y, x + 1, y + 1);
+        return true;
     }
 }
 
-void update_sand(world_t cells, uint16_t x, uint16_t y)
+bool update_sand(world_t cells, uint16_t x, uint16_t y)
 {
     cell_t selected_sand = cells[y][x];
     uint16_t speed = selected_sand.speed;
@@ -45,9 +49,12 @@ void update_sand(world_t cells, uint16_t x, uint16_t y)
     if (new_y != y)
     {
         move_cell(cells, x, y, x, new_y);
+        return true;
     }
     else
     {
-        update_sand_diagonal(cells, x, y);
+        return update_sand_diagonal(cells, x, y);
     }
+
+    return false;
 }

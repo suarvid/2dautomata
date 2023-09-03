@@ -1,5 +1,11 @@
 # 2dautomata
 
+# TODO: 
+- Add Cunit and write some tests
+- Add more cell types
+- Add menu for selecting cell types
+- Add keyboard shortcut for selecting cell types
+
 ## How to build
 Run the program with the command `make run`.
 Build the binary with the the command `make all`.

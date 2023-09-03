@@ -4,8 +4,11 @@
 #include <raylib.h>
 #include <world.h>
 #include <sand.h>
+#include <water.h>
 #include <time.h>
 
+// NOTE: World should always be indexed world[y][x],
+// or (equally) world[row][col], NOT world[x][y]
 world_t init_empty_world()
 {
     uint16_t rows = WORLD_HEIGHT;
@@ -56,20 +59,25 @@ void render_cells(world_t world)
     DrawText("S A N D G A M E", 250, 50, 20, LIGHTGRAY);
 }
 
-void spawn_if_empty(world_t world, uint16_t x, uint16_t y)
+void spawn_if_empty(world_t world, uint16_t x, uint16_t y, cell_t to_spawn)
 {
     cell_t cell = world[y][x];
     if (cell.type == EMPTY)
     {
-        world[y][x].color = YELLOW;
-        world[y][x].speed = 5;
-        world[y][x].density = 3;
-        world[y][x].type = SAND;
-        // fprintf(stderr, "Spawned Sand!\n");
+        world[y][x].color = to_spawn.color;
+        world[y][x].speed = to_spawn.speed;
+        world[y][x].density = to_spawn.density;
+        world[y][x].type = to_spawn.type;
+        world[y][x].moved = false;
+        // world[y][x].color = YELLOW;
+        // world[y][x].speed = 5;
+        // world[y][x].density = 3;
+        // world[y][x].type = SAND;
+        //  fprintf(stderr, "Spawned Sand!\n");
     }
 }
 
-void spawn_cells(world_t world)
+void spawn_cells(world_t world, cell_t to_spawn)
 {
     Vector2 mouse_pos = GetMousePosition();
     uint16_t mouse_y = mouse_pos.y;
@@ -84,7 +92,7 @@ void spawn_cells(world_t world)
                 int16_t spawn_x = mouse_x + x_delta;
                 if (spawn_x >= 0 && spawn_x < WORLD_WIDTH)
                 {
-                    spawn_if_empty(world, spawn_x, spawn_y);
+                    spawn_if_empty(world, spawn_x, spawn_y, to_spawn);
                 }
             }
         }
@@ -104,6 +112,9 @@ void update_cells(world_t world)
             case SAND:
                 update_sand(world, x, y);
                 break;
+            case WATER:
+                update_water(world, x, y);
+                break;
 
             default:
                 break;
@@ -121,6 +132,7 @@ int main(int argc, char **argv)
     InitWindow(screen_width, screen_height, "Basic Window");
     SetTargetFPS(60);
     world_t world = init_empty_world();
+    cell_t selected_cell_t = SAND_CELL_T;
 
     while (!WindowShouldClose())
     {
@@ -133,7 +145,16 @@ int main(int argc, char **argv)
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             fprintf(stderr, "Left Mouse pressed!\n");
-            spawn_cells(world);
+            spawn_cells(world, selected_cell_t);
+        }
+        // TODO: This is shit, just for testing
+        if (IsKeyPressed(KEY_S))
+        {
+            selected_cell_t = SAND_CELL_T;
+        }
+        if (IsKeyPressed(KEY_W))
+        {
+            selected_cell_t = WATER_CELL_T;
         }
     }
 

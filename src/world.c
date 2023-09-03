@@ -19,9 +19,15 @@ void move_cell(world_t world, uint16_t from_x, uint16_t from_y, uint16_t to_x, u
     world[to_y][to_x].density = to_move.density;
     world[to_y][to_x].speed = to_move.speed;
     world[to_y][to_x].type = to_move.type;
+    world[to_y][to_x].moved = true;
     empty_cell(world, from_x, from_y);
+
 }
 
+// TODO: Need to write functions for comparing the density between cells,
+// not just checking if a position is empty, as sand for example will
+// sink in water, since sand is more dense than water, but oil should
+// float on top of water, since it is less dense than water.
 bool empty_below(world_t world, uint16_t x, uint16_t y)
 {
     if (within_world_bounds(x, y + 1))
@@ -61,29 +67,77 @@ bool empty_right_down(world_t world, uint16_t x, uint16_t y)
 }
 
 // TODO: Make use of these instead of doing everything "manually"
-move_res_t move_left(world_t world, uint16_t distance)
+// Also maybe break out common functionality into some nice function
+// as the operator is basically all that changes
+move_res_t move_left(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
 {
-    return MOVE_FAILED;
-}
-move_res_t move_right(world_t world, uint16_t distance)
-{
+    int16_t dist_actual = 0;
+    while (within_world_bounds(from_x - dist_actual - 1, from_y) &&
+           world[from_y][from_x - dist_actual - 1].type == EMPTY)
+    {
+        dist_actual++;
+    }
 
-    return MOVE_FAILED;
+    move_cell(world, from_x, from_y, from_x - dist_actual, from_y);
+    return MOVE_SUCCESS;
 }
-move_res_t move_up(world_t world, uint16_t distance)
-{
 
-    return MOVE_FAILED;
+move_res_t move_right(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
+{
+    int16_t dist_actual = 0;
+    while (within_world_bounds(from_x + dist_actual + 1, from_y) &&
+           world[from_y][from_x + dist_actual + 1].type == EMPTY)
+    {
+        dist_actual++;
+    }
+
+    move_cell(world, from_x, from_y, from_x + dist_actual, from_y);
+    return MOVE_SUCCESS;
 }
-move_res_t move_down(world_t world, uint16_t distance)
+
+move_res_t move_up(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
+{
+    int16_t dist_actual = 0;
+    while (within_world_bounds(from_x, from_y - dist_actual - 1) &&
+           world[from_y - dist_actual - 1][from_x].type == EMPTY)
+    {
+        dist_actual++;
+    }
+
+    move_cell(world, from_x, from_y, from_x, from_y - dist_actual);
+    return MOVE_SUCCESS;
+}
+
+move_res_t move_down(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
+{
+    int16_t dist_actual = 0;
+    while (within_world_bounds(from_x, from_y + dist_actual + 1) &&
+           world[from_y + dist_actual + 1][from_x].type == EMPTY)
+    {
+        dist_actual++;
+    }
+
+    move_cell(world, from_x, from_y, from_x, from_y + dist_actual);
+    return MOVE_SUCCESS;
+}
+
+// TODO: Implement below
+move_res_t move_down_left(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
 {
     return MOVE_FAILED;
 }
-move_res_t move_down_left(world_t world, uint16_t distance)
+
+move_res_t move_down_right(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
 {
     return MOVE_FAILED;
 }
-move_res_t move_down_right(world_t world, uint16_t distance)
+
+move_res_t move_up_left(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
+{
+    return MOVE_FAILED;
+}
+
+move_res_t move_up_right(world_t world, uint16_t distance, cell_t to_move, uint16_t from_x, uint16_t from_y)
 {
     return MOVE_FAILED;
 }
