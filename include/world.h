@@ -27,7 +27,12 @@ typedef struct cell
 } cell_t;
 
 
+// TODO?: Performance would likely increase if we used triple pointers
+// and just re-assinged pointers to cells, rather than changing the actual
+// values in cells stored directly in the matrix (like we're doing now).
+// However, that would also be more complicated, do only if needed.
 typedef cell_t** world_t;
+
 void empty_cell(world_t world, uint16_t x, uint16_t y);
 void move_cell(world_t world, uint16_t from_x, uint16_t from_y, uint16_t to_x, uint16_t to_y);
 bool empty_below(world_t world, uint16_t x, uint16_t y);

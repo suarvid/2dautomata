@@ -26,6 +26,9 @@ OBJ_FILES = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC_FILES))
 # Executable name
 EXECUTABLE = sandgame
 
+run: all
+	./$(EXECUTABLE)
+
 # Default target
 all: $(BUILD_DIR) $(EXECUTABLE)
 
